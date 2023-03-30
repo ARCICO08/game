@@ -182,26 +182,26 @@ button{
 
 /*? esta clse se agrega deinamicamente  */
 .pregunta-actual{
-  background-color: #000;
-  color: #fff;
+  background-color: #302d2d !important;
+  color: #fff !important;
 }
 
 /*? Esta clse se agrega dinamicamente cuando haya respondido  correctamente una pregunta  */
 .bien-respondida{
-  background-color: rgb(72, 225, 143);
-  color: antiquewhite;
+  background-color: rgb(72, 225, 143) !important;
+  color: antiquewhite !important;
 }
 
 /*? Esta clse se agrega dinamicamente cuando haya respondido  incorrectamente una pregunta  */
 .mal-respondida{
-  background-color: rgb(227, 109, 88);
-  color: antiquewhite;
+  background-color: rgb(227, 109, 88) !important;
+  color: antiquewhite !important;
 }
 
 .contenedor-pregunta{
   background-color: rgba(255, 255, 255, 0.645);
   text-align: center;
-  width: 330px;
+  width: 440px;
   margin: auto;
   border: 2px solid rgb(107, 103, 103);
   border-radius: 20px;

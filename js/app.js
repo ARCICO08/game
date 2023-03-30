@@ -1,6 +1,9 @@
 //? Total preguntas
 const TOTAL_PREGUNTAS = 10;
 
+//? Cantidad preguntas correctas
+let cantidadCorrectas = 0;
+
 let preguntaActual = -1;
 let estadoPreguntas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -9,52 +12,52 @@ let estadoPreguntas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const bd_juego = [
     {
-        id: 'A',
+        id: 'a',
         pregunta: '¿Empresa reconocida que se dedica a los servidores?',
         respuesta: 'amazon'
     },
     {
-        id: 'B',
+        id: 'b',
         pregunta: '¿Termino en ingles que hace referencia a una copia de seguridad?',
         respuesta: 'backup'
     },
     {
-        id: 'C',
+        id: 'c',
         pregunta: '¿Nombre de la memoria que almacena temporalmente los datos de la computadora?',
         respuesta: 'cache'
     },
     {
-        id: 'D',
+        id: 'd',
         pregunta: '¿Archivo que controla los perifericos que se conectan a la computadora?',
         respuesta: 'cache'
     },
     {
-        id: 'E',
+        id: 'e',
         pregunta: '¿Mezclar los datos para protegerlos como medida de seguridad, es decir convertir texto normal a texto cifrado?',
         respuesta: 'encriptar'
     },
     {
-        id: 'F',
+        id: 'f',
         pregunta: '¿Famosa red social creada por Mark Zuckerberg?',
         respuesta: 'facebook'
     },
     {
-        id: 'G',
+        id: 'g',
         pregunta: '¿Lenguaje de programacion creado por Google?',
         respuesta: 'go'
     },
     {
-        id: 'H',
+        id: 'h',
         pregunta: '¿Lenguaje utilizado para estructurar las paginas web?',
         respuesta: 'html'
     },
     {
-        id: 'I',
+        id: 'i',
         pregunta: '¿Aspecto que presentan los programas tras su ejecucion mediante el cual ejercemos la comunicacion?',
         respuesta: 'html'
     },
     {
-        id: 'J',
+        id: 'j',
         pregunta: '¿Lenguaje de programacion con el cual se diseño el sistema operativo android?',
         respuesta: 'java'
     },
@@ -101,8 +104,6 @@ comenzar.addEventListener('click', () => {
     iniciarContador();
     //? Cargamos las preguntas
     cargarPreguntas();
-    //
-    tiempoReset()
 });
 
 function iniciarContador(){
@@ -137,12 +138,13 @@ function cargarPreguntas(){
         //? Ahora si buscamos la pregunta en la base de datos
         document.getElementById('letra-pregunta').textContent = bd_juego[preguntaActual].id;
         document.getElementById('pregunta').textContent = bd_juego[preguntaActual].pregunta;
-        let letra = bd_juego(letra).classList.add('pregunta-actual')
+        let letra = bd_juego[preguntaActual].id;
+        document.getElementById(letra).classList.add('pregunta-actual');
+    }else{
+        //? Si ya no hay preguntas sin responder, terminamos el juego
+        clearInterval(countdown)
+        //? mostrarPantallaFinal()
     }
-}
-
-function tiempoReset(){
-    timepoRestante = 60
 }
 
 //? Funcion para regresar al inicio
@@ -154,3 +156,33 @@ regresar.addEventListener('click', () => {
     document.getElementById('pantalla-inicial').classList.remove('subir');
 })
 
+//! Detectamos el cambio del input
+
+let respuesta = document.getElementById('respuesta');
+respuesta.addEventListener('keyup', function (event) {
+    //? Detecto si se presiona la tecla enter
+    if(event.key === 'Enter'){
+        if(respuesta.value === ''){
+            alert('Debe ingresar una respuesta');
+            return;
+        }
+        //? Obtengo respuesta ingresada
+        let respuestaIngresada = respuesta.value.toLowerCase();
+        controlarRespuesta(respuestaIngresada);
+    }
+});
+
+function controlarRespuesta(respuestaIngresada){
+    //? Controlo la respuesta correcta
+    if (respuestaIngresada == bd_juego[preguntaActual].respuesta){
+        // alert('Respuesta Correcta');
+        cantidadCorrectas++;
+
+        //? Cambio el estado de la pregunta
+        estadoPreguntas[preguntaActual] = 1;
+
+        let letra = bd_juego[preguntaActual].id;
+        document.getElementById(letra).classList.remove('pregunta-actual');
+        document.getElementById(letra).classList.add('bien-respondida');
+    }
+}

@@ -29,7 +29,7 @@ const bd_juego = [
     {
         id: 'd',
         pregunta: '¿Archivo que controla los perifericos que se conectan a la computadora?',
-        respuesta: 'cache'
+        respuesta: 'driver'
     },
     {
         id: 'e',
@@ -54,7 +54,7 @@ const bd_juego = [
     {
         id: 'i',
         pregunta: '¿Aspecto que presentan los programas tras su ejecucion mediante el cual ejercemos la comunicacion?',
-        respuesta: 'html'
+        respuesta: 'interfaz'
     },
     {
         id: 'j',
@@ -96,7 +96,7 @@ let comenzar = document.getElementById('comenzar');
 comenzar.addEventListener('click', () => {
     document.getElementById('pantalla-inicial').classList.add('subir')
     document.getElementById('pantalla-juego').style.display = 'block';
-    document.getElementById('regresar').style.display = 'block';
+    // document.getElementById('regresar').style.display = 'block'; //? <------- tener encuenta
     document.getElementById('pantalla-inicial').classList.add('subir');
     document.getElementById('pantalla-juego').classList.add('visible');
 
@@ -115,7 +115,8 @@ function iniciarContador(){
 
         //? Si el tiempo llega a 0, detiene el contador
         if(timepoRestante == 0){
-            clearInterval(countdown)
+            clearInterval(countdown);
+            mostrarPantallaFinal();
         }
     }, 1000)
 }
@@ -143,7 +144,7 @@ function cargarPreguntas(){
     }else{
         //? Si ya no hay preguntas sin responder, terminamos el juego
         clearInterval(countdown)
-        //? mostrarPantallaFinal()
+        mostrarPantallaFinal()
     }
 }
 
@@ -184,5 +185,69 @@ function controlarRespuesta(respuestaIngresada){
         let letra = bd_juego[preguntaActual].id;
         document.getElementById(letra).classList.remove('pregunta-actual');
         document.getElementById(letra).classList.add('bien-respondida');
+    }else {
+        estadoPreguntas[preguntaActual] = 1;
+        let letra = bd_juego[preguntaActual].id;
+        document.getElementById(letra).classList.remove('pregunta-actual');
+        document.getElementById(letra).classList.add('mal-respondida');
     }
+    //? Limpio el input
+    respuesta.value = '';
+    //? Cargo la siguiente pregunta
+    cargarPreguntas();
 }
+
+//? Boton para pasar de pregunta sin contestar
+let pasar = document.getElementById('pasar');
+pasar.addEventListener('click', function () {
+    let letra = bd_juego[preguntaActual].id;
+    document.getElementById(letra).classList.remove('pregunta-actual');
+    cargarPreguntas();
+})
+
+//? Boton para responder las preguntas
+let responder = document.getElementById('responder');
+responder.addEventListener('click', function () {
+    if(respuesta.value === ''){
+        alert('Debe ingresar su respuesta');
+        respuesta.focus();
+        respuesta.value = '';
+        return;
+    }
+    let respuestaIngresada = respuesta.value.toLowerCase();
+    controlarRespuesta(respuestaIngresada);
+    respuesta.focus();
+})
+
+//? Mostrar pantalla Final
+function mostrarPantallaFinal(){
+    document.getElementById('acertadas').textContent = cantidadCorrectas;
+    document.getElementById('puntaje').textContent = (cantidadCorrectas * 100) / TOTAL_PREGUNTAS + '% de aciertos';
+    document.getElementById('pantalla-juego').style.display = 'none';
+    document.getElementById('pantalla-final').style.display = 'block';
+}
+
+let reiniciar = document.getElementById('reiniciar');
+reiniciar.addEventListener('click', () => {
+    //? reiniciamos variables
+    cantidadCorrectas = 0;
+    preguntaActual = -1;
+    timepoRestante = TIEMPO_DEL_JUEGO;
+    timer.innerText = timepoRestante;
+    estadoPreguntas = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    //? Quitamos las clases de los circulos
+    let circulos = document.getElementsByClassName('circle');
+    for(i=0; i < circulos.length; i++){
+        circulos[i].classList.remove('pregunta-actual');
+        circulos[i].classList.remove('bien-respondida');
+        circulos[i].classList.remove('mal-respondida');
+    }
+    //? Mostrar la pantalla inicial
+    document.getElementById('pantalla-final').style.display = 'none'
+    document.getElementById('pantalla-juego').style.display = 'block'
+    respuesta.value = '';
+    respuesta.focus();
+    iniciarContador();
+    cargarPreguntas();
+})
